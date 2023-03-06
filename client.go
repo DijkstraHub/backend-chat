@@ -44,6 +44,8 @@ func (c *Client) read() {
 		return c.connection.SetReadDeadline(time.Now().Add(pongWait))
 	})
 
+	c.connection.SetReadLimit(512)
+
 	for {
 		_, message, err := c.connection.ReadMessage()
 		if err != nil {

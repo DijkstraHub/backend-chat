@@ -12,9 +12,11 @@ import (
 
 var (
 	webSocketUpgader = websocket.Upgrader{
+		CheckOrigin:     checkOrigin,
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 	}
+	AllowedOrigins = []string{"http://localhost:8080"}
 )
 
 type Manager struct {
@@ -84,4 +86,14 @@ func (m *Manager) removeClient(client *Client) {
 		client.connection.Close()
 		delete(m.clients, client)
 	}
+}
+
+func checkOrigin(r *http.Request) bool {
+	origin := r.Header.Get("Origin")
+	for _, o := range AllowedOrigins {
+		if origin == o {
+			return true
+		}
+	}
+	return false
 }
