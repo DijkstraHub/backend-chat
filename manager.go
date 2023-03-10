@@ -44,15 +44,10 @@ func (m *Manager) SetupEventHandlers() {
 }
 
 func SendMessage(event Event, c *Client) error {
-	fmt.Println("Sending message event")
-	fmt.Println(event)
 	var sendMessageEvent SendMessageEvent
 	if err := json.Unmarshal(event.Payload, &sendMessageEvent); err != nil {
-		fmt.Println("error unmarshalling event: %w", err)
 		return fmt.Errorf("error unmarshalling event: %w", err)
 	}
-	fmt.Println("Sending message unmarshalled")
-	fmt.Println(sendMessageEvent)
 	var broadMessage NewMessageEvent
 	broadMessage.Sent = time.Now()
 	broadMessage.Message = sendMessageEvent.Message
@@ -60,7 +55,6 @@ func SendMessage(event Event, c *Client) error {
 
 	data, err := json.Marshal(broadMessage)
 	if err != nil {
-		fmt.Println("error marshalling event: %w", err)
 		return fmt.Errorf("error marshalling event: %w", err)
 	}
 	outGoingEvent := Event{
