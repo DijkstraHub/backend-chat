@@ -19,7 +19,7 @@ var (
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 	}
-	AllowedOrigins = []string{"http://localhost:8080"}
+	AllowedOrigins = []string{"https://localhost:8080"}
 )
 
 type Manager struct {

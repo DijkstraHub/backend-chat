@@ -124,7 +124,7 @@
             function connectWebSocket(otp){
                 if (window["WebSocket"]) {
                     console.log("WebSocket supported");
-                    ws = new WebSocket("ws://" + document.location.host + "/ws?otp=" + otp);
+                    ws = new WebSocket("wss://" + document.location.host + "/ws?otp=" + otp);
                     ws.onopen = function () {
                         document.getElementById("conection-status").innerHTML = "true";
                     };
