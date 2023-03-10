@@ -40,7 +40,7 @@ func (c *Client) read() {
 	}
 
 	c.connection.SetPongHandler(func(string) error {
-		fmt.Println("pong")
+		// fmt.Println("pong")
 		return c.connection.SetReadDeadline(time.Now().Add(pongWait))
 	})
 
@@ -95,10 +95,9 @@ func (c *Client) write() {
 			if err := c.connection.WriteMessage(websocket.TextMessage, data); err != nil {
 				fmt.Println("error sending message: ", err)
 			}
-			fmt.Println("message sent: ", string(data))
 
 		case <-ticker.C:
-			fmt.Println("ping")
+			// fmt.Println("ping")
 			//send ping to the client
 			if err := c.connection.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				fmt.Println("error sending ping: ", err)

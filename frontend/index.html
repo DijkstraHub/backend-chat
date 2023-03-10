@@ -19,7 +19,10 @@
             <input type="submit" value="Submit">
         </form></br></br>
 
-        <textarea class="chatbox" id="chatbox" name="chatbox" rows="4" cols="15" placeholder="Welcome to chatroom"
+        <textarea 
+            class="chatbox" id="chatbox" name="chatbox" 
+            rows="4" cols="50" 
+            placeholder="Chatbox"
             readonly>
         </textarea></br></br>
 
@@ -50,6 +53,21 @@
                 }
             }
 
+            class SendMessageEvent {
+                constructor(message, from) {
+                    this.message = message;
+                    this.from = from;
+                }
+            }
+
+            class NewMessageEvent {
+                constructor(message, from, sent) {
+                    this.message = message;
+                    this.from = from;
+                    this.sent = sent;
+                }
+            }
+
             function routeEvent(event) {
                 if (event.type === undefined || event.data === undefined) {
                     console.error("Invalid event: " + event);
@@ -58,6 +76,8 @@
                 switch (event.type) {
                     case "new_message":
                         console.log("New message: " + event.data);
+                        const newMessageEvent = Object.assign(new NewMessageEvent(), event.data);
+                        appendMessage(newMessageEvent);
                         break;
                     default:
                         console.log("Unknown event type: " + event.type);
@@ -65,11 +85,19 @@
                 }
             }
 
+            function appendMessage(messageEvent) {
+                var date = new Date(messageEvent.sent);
+                const messageFormatted = `${date.toLocaleString()}: ${messageEvent.message}`;
+                var chatbox = document.getElementById("chatbox");
+                chatbox.innerHTML = chatbox.innerHTML + '\n' + messageFormatted
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+
             function sendEvent(eventName, payload) {
                 try {
                     const e = new Event(eventName, payload);
                     ws.send(JSON.stringify(e));
-                    console.log("Event sent: " + e);
+                    // console.log("Event sent: " + e);
                 } catch (error) {
                     console.error(error);
                 }
@@ -79,7 +107,7 @@
                 var newChatroom = document.getElementById("chatroom").value;
                 if (selectedChatroom =! null && newChatroom != selectedChatroom) {
                     selectedChatroom = newChatroom;
-                    console.log("Chatroom changed to: " + selectedChatroom);
+                    // console.log("Chatroom changed to: " + selectedChatroom);
                 }
                 return false;
             }
@@ -88,8 +116,9 @@
                 try {
                     var message = document.getElementById("message");
                     if (message != null) {
-                        sendEvent("send_message", message.value);
-                        console.log("Message sent: " + message.value);
+                        let outGoingEvent = new SendMessageEvent(message.value, "art1221");
+                        sendEvent("send_message", outGoingEvent);
+                        // console.log("Message sent: " + message.value);
                     }
                 } catch (error) {
                     console.error(error);
